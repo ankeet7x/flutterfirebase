@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'home.dart';
 import 'signup.dart';
 
 class LoginPage extends StatefulWidget {
@@ -10,6 +12,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   String _email, _password;
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
 
   _submit() {
     if (_formKey.currentState.validate()) {
@@ -17,6 +21,13 @@ class _LoginPageState extends State<LoginPage> {
       print(_email);
       print(_password);
     }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -33,13 +44,15 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: [
                 TextFormField(
+                  controller: _emailController,
                   decoration: InputDecoration(labelText: "Email"),
-                  validator: (val) => !val.endsWith("@gmail.com")
-                      ? "Please enter a valid email"
-                      : null,
+                  validator: (val) => val.endsWith("@gmail.com")
+                      ? null
+                      : "Please enter a valid email",
                   onSaved: (val) => _email = val,
                 ),
                 TextFormField(
+                  controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(labelText: "Password"),
                   validator: (val) =>
@@ -50,7 +63,22 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           RaisedButton(
-            onPressed: _submit,
+            onPressed: () async {
+              _submit();
+              try {
+                User user = (await FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                            email: _emailController.text,
+                            password: _passwordController.text))
+                    .user;
+                if (user != null) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomePage()));
+                }
+              } catch (e) {
+                print(e);
+              }
+            },
             child: Text("Login"),
           ),
           RaisedButton(
