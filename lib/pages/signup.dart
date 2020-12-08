@@ -22,6 +22,12 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
+  _createDialog() {
+    return AlertDialog(
+      title: Text("User created"),
+    );
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -79,6 +85,7 @@ class _SignUpState extends State<SignUp> {
                         password: _passwordController.text)) as User;
                 if (user != null) {
                   print("User created");
+                  _createDialog();
                 }
               } catch (e) {
                 print(e);

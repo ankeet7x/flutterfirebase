@@ -87,8 +87,15 @@ class _LoginPageState extends State<LoginPage> {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => SignUp()));
             },
-          )
-        ],
+          ),
+        //   RaisedButton(
+        //     child: Text("Stream builder"),
+        //     onPressed: (){},
+        //   )
+        // ],
+         
+
+        ]
       )),
     );
   }
